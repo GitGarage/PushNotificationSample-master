@@ -1,0 +1,50 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {
+            "config.xml": {
+                "parents": {
+                    "/*": [
+                        {
+                            "xml": "<feature name=\"Device\"><param name=\"browser-package\" value=\"Device\" /></feature>",
+                            "count": 1
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "installed_plugins": {
+        "com.phonegap.plugins.PushPlugin": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "cordova-plugin-x-toast": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "org.apache.cordova.console": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "org.apache.cordova.device": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "org.apache.cordova.dialogs": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "org.apache.cordova.file": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "org.apache.cordova.media": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        },
+        "phonegap-plugin-push": {
+            "PACKAGE_NAME": "org.devgirl.push.sample"
+        }
+    },
+    "dependent_plugins": {}
+}
