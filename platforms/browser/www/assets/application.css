@@ -1,12 +1,20 @@
 
 html {
     height: 100%;
+    -webkit-transition: background-color 1s;
+    transition: background-color 1s;
+}
+
+html.loading {
+    -webkit-transition: background-color 0s;
+    transition: background-color 0s;
 }
 
 body {
     margin: 0;
     height: 100%;
     overflow: hidden;
+    background-color: black;
 }
 
 div {
@@ -21,10 +29,12 @@ div.slide {
 
 #frame1 {
     background-color: #0059bc;
+    z-index: 10;
 }
 
 #frame2 {
     background-color: #4CAF50;
+    z-index: 0;
 }
 
 #frame3 {
@@ -42,9 +52,18 @@ div.slide {
 
 #shield {
     position: absolute;
-    left: 0;
+    left: -100%;
     top: 0;
     height: 100%;
-    width: 100%;
+    width: 300%;
     z-index: 40;
+    overflow: hidden;
+}
+
+#marquee {
+    position: absolute;
+    width: initial;
+    height: initial;
+    font-size: 50px;
+    white-space: nowrap;
 }

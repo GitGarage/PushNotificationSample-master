@@ -5,8 +5,11 @@ app.controller("main", ['$scope', function ($scope) {
     var x2 = 0;
     var initial;
     var counter = 0;
-    var refure = false;
+    var refuse = false;
     s.tabs = [];
+    s.frame1url = 'frame1.html';
+    s.frame2url = 'frame2.html';
+    s.frame3url = 'frame3.html';
 
     s.init = function() {
         $('title').html('E-Z·TOEIC');
@@ -17,7 +20,6 @@ app.controller("main", ['$scope', function ($scope) {
                 $(event.target).css('left', '-100%');
             }
         });
-        resized();
         window.addEventListener('resize', function() {
             resized();
         }, false);
@@ -114,5 +116,9 @@ app.controller("main", ['$scope', function ($scope) {
     function resized() {
         initDrag();
     }
+
+    $scope.$on('forceResize', function(event, args) {
+        resized();
+    });
 
 }]);
