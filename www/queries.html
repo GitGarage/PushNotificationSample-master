@@ -1,0 +1,54 @@
+<table>
+    <tr>
+        <td colspan="5" style="height:2em">
+            <h1>
+                Community >
+                <input id="board" type="text" ng-model="board" style="font-size: 1em" ng-if="mine">
+                <button type="button" ng-click="setBoard()" ng-if="mine">
+                    Set Forum Title
+                </button>
+                <m ng-bind="board" ng-if="!mine"></m>
+            </h1>
+        </td>
+    </tr>
+    <tr style="font-weight: 600">
+        <td style="font-size: 1.1em; width: 20em;">
+            Queries
+        </td>
+        <td style="font-size: 1.1em; width:12%">
+            Posts
+        </td>
+        <td style="font-size: 1.1em; width:12%">
+            User
+        </td>
+        <td style="font-size: 1.1em; width:12%">
+            Updated
+        </td>
+        <td style="font-size: 1.1em">
+        </td>
+    </tr>
+    <tr ng-repeat="query in data">
+        <td class="link"
+            ng-click="postulate(query.id)"
+            style="font-size: 1.1em;"
+            ng-bind="query.title">
+        </td>
+        <td style="font-size: 1.1em;">
+            {{query.posts}}
+        </td>
+        <td style="font-size: 1.1em;">
+            {{query.user}}
+        </td>
+        <td style="font-size: 1.1em;">
+            {{query.updated}}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4" style="text-align: right; padding-top:3em; font-size: 1em; ">
+            <span ng-click="formulize()" style="text-decoration: underline; cursor: pointer;">Back To Forums</span>&nbsp;&nbsp;&nbsp;
+            <span ng-click="deleteForum(forum)" ng-if="'its me'" style="text-decoration: underline; cursor: pointer;">Delete Forum</span>
+            <span ng-if="'its me'">&nbsp;&nbsp;&nbsp;</span>
+            <span ng-click="postulate(-1,forum)" ng-if="'its me'" style="text-decoration: underline; cursor: pointer;">Add Query</span>
+        </td>
+    </tr>
+</table>

@@ -1,38 +1,256 @@
-<div ng-controller="dashboard">
-    <h1 style="text-align: center">
-        <span ng-repeat="letter in 'Dashboard' track by $index" ng-bind="letter" ng-style="{color: colors[$index % colors.length].name}"></span>
-    </h1>
-    <ul>
-        <li ng-repeat="color in colors">
-            <label>Name: <input ng-model="color.name"></label>
-            <label><input type="checkbox" ng-model="color.notAnOption"> Disabled?</label>
-            <button ng-click="colors.splice($index, 1)" aria-label="Remove">X</button>
-        </li>
-        <li>
-            <button ng-click="colors.push({})">add</button>
-        </li>
-    </ul>
-    <hr/>
-    <label>Color (null not allowed):
-        <select ng-model="myColor" ng-options="color.name for color in colors"></select>
-    </label><br/>
-    <label>Color (null allowed):
-  <span  class="nullable">
-    <select ng-model="myColor" ng-options="color.name for color in colors">
-        <option value="">-- choose color --</option>
-    </select>
-  </span></label><br/>
-
-    <label>Color grouped by shade:
-        <select ng-model="myColor" ng-options="color.name group by color.shade for color in colors">
-        </select>
-    </label><br/>
-
-    Select <button ng-click="myColor = { name:'not in list', shade: 'other' }">bogus</button>.
-    <br/>
-    <hr/>
-    Currently selected: {{ {selected_color:myColor} }}
-    <div style="border:solid 1px black; height:500px"
-         ng-style="{'background-color':myColor.name}">
+<div id="Dashboard"
+     class="sliders"
+     ng-controller="dashboard"
+     ng-init="init()"
+     ng-style="{'font-size': fontSize}">
+    <table style="margin-top:1.2em; margin-left:1.2em;width:100%;">
+        <tr>
+            <td style="width:10em;">
+            </td>
+            <td style="font-size:1.2em;">
+                Goal Score: {{data.goal}}
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:1.2em;">
+                Summary
+            </td>
+            <td style="font-size:1.2em;">
+                Test Date: {{data.date}}
+            </td>
+        </tr>
+    </table>
+    <hr>
+    <table style="margin-top:1.2em; margin-left:1.2em;width:100%;">
+        <tr>
+            <td style="font-size:1.2em;">
+                Listening
+            </td>
+            <td colspan="3">
+            </td>
+            <td colspan="2"
+                style="font-size:1.2em; text-align: center; font-weight: 700;">
+                Average&nbsp;pace/per&nbsp;question
+            </td>
+            <td ng-style="{width : (canvas == 1 ? '0px' : '50px')}">
+                &nbsp;
+            </td>
+            <td rowspan="22" style="height: 100%;" id="home" ng-style="{display : (canvas == 1 ? 'table-cell' : 'none')}">
+                <canvas id="thisGraph"
+                        height="257"
+                        width="354"
+                        class="graph"
+                        ng-click="zoomIn(0)"
+                        ng-style="{display : (canvas == 1 ? 'inline-block' : 'none'), visibility : (canvas == 1 ? 'visible' : 'hidden')}">
+                </canvas>
+                <canvas height="257" width="354" style="display: none" class="shadow">
+                </canvas>
+            </td>
+            <td ng-style="{width : (canvas == 2 ? '0px' : '50px')}">
+                &nbsp;
+            </td>
+        </tr>
+        <tr style="text-align: center">
+            <td colspan="4">
+            </td>
+            <td style="font-size:1.2em;">
+                Yours
+            </td>
+            <td style="font-size:1.2em;">
+                Others
+            </td>
+        </tr>
+        <tr ng-repeat="row in data.listening">
+            <td>
+            </td>
+            <td style="width:3.5em; font-size:1.2em;" ng-bind-html="row.title">
+            </td>
+            <td>
+                <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+                    <tr>
+                        <td ng-style="{'background-color': '#8e3931',
+                           'width':(row.score)+'%'}">
+                            &nbsp;
+                        </td>
+                        <td class="scores"
+                            ng-if="row.score!=100">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style="padding-left: 1.2em; font-size:1.2em;">
+                {{row.score}}%
+            </td>
+            <td style="text-align: center; font-size:1.2em;">
+                {{row.mypace}}
+            </td>
+            <td style="text-align: center; font-size:1.2em;">
+                {{row.yourpace}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:1.2em;">
+                Reading
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr ng-repeat="row in data.reading">
+            <td>
+            </td>
+            <td style="font-size:1.2em;" ng-bind-html="row.title">
+            </td>
+            <td>
+                <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+                    <tr>
+                        <td ng-style="{'background-color': '#8e3931',
+                           'width':(row.score)+'%'}">
+                            &nbsp;
+                        </td>
+                        <td class="scores"
+                            ng-if="row.score!=100">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td style=" padding-left: 1.2em;font-size:1.2em;">
+                {{row.score}}%
+            </td>
+            <td style="text-align: center;font-size:1.2em;">
+                {{row.mypace}}
+            </td>
+            <td style="text-align: center;font-size:1.2em;">
+                {{row.yourpace}}{{alert('<%= @alert %>')}}
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"
+                style="font-size:1.2em;">
+                Reading Speed / wpm
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td style="font-size:1.2em;">
+                Goal:
+            </td>
+            <td>
+                <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+                    <tr>
+                        <td ng-style="{'background-color': '#8e3931',
+                           'width':(data.readingWPM.percent)+'%'}">
+                            &nbsp;
+                        </td>
+                        <td class="scores"
+                            ng-if="data.readingWPM.percent!=100">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td colspan="3"
+                style="padding-left: 1.2em;font-size:1.2em;">
+                {{data.readingWPM.total}} / 150
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            </td>
+            <td style="text-align: center;font-size:1.2em;">
+                {{data.readingWPM.percent}}%
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3"
+                style="font-size:1.2em;">
+                Vocabulary
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td style="font-size:1.2em;">
+                Goal:
+            </td>
+            <td>
+                <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+                    <tr>
+                        <td ng-style="{'background-color': '#8e3931',
+                           'width':(data.vocabulary.percent)+'%'}">
+                            &nbsp;
+                        </td>
+                        <td class="scores"
+                            ng-if="data.vocabulary.percent!=100">
+                            &nbsp;
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            <td colspan="3"
+                style="padding-left: 1.2em;font-size:1.2em;">
+                {{data.vocabulary.total}} / 8000
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+            </td>
+            <td style="text-align: center;font-size:1.2em;">
+                {{data.vocabulary.percent}}%
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &nbsp;
+            </td>
+        </tr>
+    </table>
+    <div style="width:100%; text-align: center;">
+        <canvas id="thisGraph2"
+                height="4500"
+                width="6200"
+                class="graph"
+                ng-click="zoomIn(1)"
+                ng-style="{visibility : (canvas == 2 ? 'visible' : 'hidden')}">
+        </canvas>
+        <canvas height="257" width="354" style="display: none" class="shadow">
+        </canvas>
+        <div class="background" style="display:none;">
+        </div>
     </div>
+    <hr>
+    <button id="verify"
+            style="display:none"
+            ng-click="messenger('Thank you. A confirmation email has been sent.',
+                              300, 200, 'Registration almost complete!', ['OK'])">
+    </button>
+    <button id="refresh"
+            style="display:none"
+            ng-click="refresh()">
+    </button>
 </div>

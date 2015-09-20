@@ -1,1 +1,52 @@
-<h1 style="text-align: center">Welcome to the options page!!!!! LOLOL</h1>
+<div ng-controller="forumns">
+    <div id="posts" style="display:none; position:absolute;" ng-include="'posts.html'"></div>
+    <div id="queries" style="display:none; position:absolute;" ng-include="'queries.html'"></div>
+    <table id="forums">
+        <tr>
+            <td style="height:2em">
+                <h1>
+                    Community
+                </h1>
+            </td>
+        </tr>
+        <tr style="font-size: 1.1em; font-weight: 600">
+            <td style="font-size: 1.1em; width:30%">
+                Forums
+            </td>
+            <td style="font-size: 1.1em; width:15%">
+                Queries
+            </td>
+            <td style="font-size: 1.1em; width:15%">
+                Responses
+            </td>
+            <td style="font-size: 1.1em; width:15%">
+                Updated
+            </td>
+            <td style="font-size: 1.1em; width:15%">
+            </td>
+        </tr>
+        <tr ng-repeat="forum in data">
+            <td class="link"
+                ng-click="forumulate(forum.id)"
+                style="font-size: 1.1em;">
+                {{forum.title}}
+            </td>
+            <td style="font-size: 1.1em;">
+                {{forum.queries}}
+            </td>
+            <td style="font-size: 1.1em;">
+                {{forum.responses}}
+            </td>
+            <td style="font-size: 1.1em;">
+                {{forum.updated}}
+            </td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+            <td colspan="4" style="text-align: right; padding-top:3em; font-size: 1em; ">
+                <span ng-click="forumulate(-1)" ng-if="'<%= session[:user] != nil %>' == 'true'" style="text-decoration: underline; cursor: pointer;">Add Forum</span>
+            </td>
+        </tr>
+    </table>
+</div>

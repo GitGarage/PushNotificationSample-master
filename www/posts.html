@@ -1,0 +1,196 @@
+<table>
+    <tr>
+        <td style="height:2em">
+            <h1>Community >
+                <input id="thread" type="text" ng-model="thread" style="font-size: 1em" ng-if="(!data[0] || data[0].mine)">
+                <button type="button" ng-click="setThread()" ng-if="(!data[0] || data[0].mine)">
+                    Set Query Title
+                </button>
+                <m ng-bind="thread" ng-if="!(!data[0] || data[0].mine)"></m>
+            </h1>
+        </td>
+    </tr>
+    <tr ng-repeat="post in data"
+        ng-init="format(post.message)">
+        <td>
+            <table>
+                <tr>
+                    <td colspan="4" rowspan="5" style="vertical-align: top">
+                        <div style="height: 100px; width: 100px; vertical-align: middle; display: inherit; text-align: center;" ng-if="post.avatar.length > 0" ng-bind-html="trustAsHtml(avatarHTML(post.avatar))">
+
+                        </div>
+                        <div>
+                            {{post.user}}<br>
+                            {{post.updated + last($index)}}<br>
+                            Posts: {{post.user_posts}}<br>
+                            Joined: {{post.user_joined}}<br>
+
+                        </div>
+                    </td>
+                    <td style="padding-left: 2em; vertical-align: top; font-size: 1.2em;">
+                        <div ng-bind-html="trustAsHtml(post.message)"
+                             style="width:30em; font-size:16px;">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;" ng-if="post.mine">
+                        <span onclick="$('#pickme').removeAttr('id'); $(this).attr('id','pickme')" name="{{post.id}}" ng-click="edit(post.id)" style="font-size: 1.1em; text-decoration: underline; color: blue; cursor: pointer;">Edit</span>&nbsp;
+                        <span onclick="$('#pickme').removeAttr('id'); $(this).attr('id','pickme')" name="{{post.id}}" ng-click="deleteMe(post.id)" style="font-size: 1.1em; text-decoration: underline; color: darkred; cursor: pointer;">Delete</span>
+                    </td>
+                </tr>
+            </table>
+            <hr>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <table style="width:50em">
+                <tr>
+                    <td colspan="2">
+                        <div style="width:48%; display: inline-block;">
+                            <button type="button"
+                                    ng-mousedown="styleBox(0,$event, false)"
+                                    style="font-family: arial; font-weight: 600">
+                                B
+                            </button>
+                            <button type="button"
+                                    ng-mousedown="styleBox(1,$event, false)"
+                                    style="font-family: 'Consolas', monospace; font-style: italic">
+                                I
+                            </button>
+                            <button type="button"
+                                    ng-mousedown="styleBox(2,$event, false)"
+                                    style="font-family: arial; text-decoration: underline">
+                                U
+                            </button>
+                            <input type="image" src="<%= asset_url('snd.png')%>" onclick="$('#posts').find('#editFile').attr('class','snd');$('#posts').find('#editFile').click()" style="height: 20px; position: relative; top: 6px;">
+                            <button type="button"
+                                    onclick="$(this).next().attr('class','pic');$(this).next().click()"
+                                    style="font-family: arial;">
+                                img
+                            </button>
+                            <input type="file" id="editFile" style="display:none">
+                            <button type="button"
+                                    ng-mousedown="styleBox(3,$event, false)"
+                                    style="font-family: arial;">
+                                font size:
+                            </button>
+                            <input type="text" placeholder="16px" style="width:3em">
+                            </input>
+                        </div>
+                        <div style="width:51%; display: inline-block; float: right; text-align: right;">
+                            <input id="copylink"
+                                   type="text"
+                                   style="font-family:arial; width:80%; padding-left: 5px;"
+                                   placeholder="Enter URL here to create a link.">
+                            </input>
+                            <button type="button"
+                                    ng-mousedown="setLink($event)"
+                                    style="font-family: arial; color: blue; text-decoration: underline">
+                                link
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="textarea"
+                             contenteditable="true"
+                             style="line-height: 1.2em; overflow-y: scroll; width:100%; font-family: arial, sans-serif; font-size:16px; color: black; border:2px gray solid; height:8em; z-index: 50;">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button type="button"
+                                ng-click="forumulate(forum)"
+                                style="width:100%;">
+                            Cancel
+                        </button>
+                    </td>
+                    <td>
+                        <button id="editSubmit"
+                                type="button"
+                                ng-click="submit(query)"
+                                style="width:100%;">
+                            Submit
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+    <tr>
+        <td style="text-align:right; padding-top:1em; font-size: 1em;">
+            <span ng-click="forumulate(forum)" style="text-decoration: underline; cursor: pointer;">Back</span>&nbsp;&nbsp;&nbsp;
+            <span ng-click="deleteQuery(query)" ng-if="'user' == 'omikey'" style="text-decoration: underline; cursor: pointer;">Delete Query</span>
+        </td>
+    </tr>
+</table>
+<script>
+    $(function () {
+        $('#posts').find("#editFile").each(function (i, elem) {
+            var fileInput = $('#posts').find("#editFile");
+            //var form = $(fileInput.parents('form:first'));
+            var submitButton = $('#posts').find('#editSubmit');
+            //var progressBar = $("<div class='bar'></div>");
+            //var barContainer = $("<div class='progress'></div>").append(progressBar);
+            //$('#thisButt').after(barContainer);
+            var denverOmlet = {monkey: 'suit'}; //JSON.parse('<%= @s3_direct_post.fields.to_json.html_safe %>');
+
+            fileInput.fileupload({
+                fileInput: fileInput,
+                url: '<%= @post_url %>',
+                type: 'POST',
+                autoUpload: true,
+                formData: {
+                    key: denverOmlet['key'],
+                    AWSAccessKeyId: denverOmlet['AWSAccessKeyId'],
+                    acl: denverOmlet['acl'],
+                    policy: '<%= @policy %>',
+                    signature: '<%= @siggy %>',
+                    success_action_status: denverOmlet['success_action_status']
+                },
+                paramName: 'file', // S3 does not like nested name fields i.e. name="user[avatar_url]"
+                dataType: 'XML',  // S3 returns XML if success_action_status is set to 201
+                replaceFileInput: false,
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    //progressBar.css('width', progress + '%')
+                },
+                start: function (e) {
+                    submitButton.prop('disabled', true);
+
+//                    progressBar.css('background', 'green').css('display', 'block').css('width', '0%').text("Loading...");
+                },
+                done: function (e, data) {
+                    submitButton.prop('disabled', false);
+                    //                  progressBar.text("Uploading done");
+
+                    // extract key and generate URL from response
+                    var key = $(data.jqXHR.responseXML).find("Key").text();
+                    var url = 'https://s3-us-west-2.amazonaws.com/assets-japanfour/' + key;
+
+                    // create hidden field
+//                      var input = $("<input />", { type:'hidden', name: fileInput.attr('name'), value: url });
+                    //                    form.append(input);
+                    if ($('#posts').find('#editFile').attr('class') == 'pic')
+                    {
+                        $('#textarea').append('<object style="width: 20em" data="' + url + '" type="image/png"></object>');
+                    }
+                    else
+                    {
+                        $('#textarea').append("<div style='width:0; height:0; opacity:0'><p id='audioplayer_1'>Alternative content</p><script type='text/javascript'>AudioPlayer.embed('audioplayer_1', {soundFile: '" + url + "'});<\/script><\/div>");
+                    }
+
+                },
+                fail: function (e, data) {
+                    submitButton.prop('disabled', false);
+
+                    //progressBar.css("background", "red").text("Failed");
+                }
+            });
+        });
+    });
+</script>
