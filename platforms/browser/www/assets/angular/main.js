@@ -1,4 +1,4 @@
-app.controller("main", ['$scope', function ($scope) {
+app.controller("main", ['$scope', '$rootScope', function ($scope, $rootScope) {
     var s = $scope;
     var width = 0;
     var x1 = 0;
@@ -92,6 +92,7 @@ app.controller("main", ['$scope', function ($scope) {
                 }
             },
             stop: function(event, ui) {
+                resized();
                 if (!refuse)
                 {
                     s.lastY = $('#frame1').offset().top;
@@ -154,15 +155,25 @@ app.controller("main", ['$scope', function ($scope) {
                         }
                         $('#shield').hide();
                         counter = 0;
+                        $rootScope.$broadcast('forceRedraw');
                     });
                 }
             }
         });
     }
 
+    s.width1 = 0;
+    s.height1 = 0;
+    s.top1 = 0;
+    s.left1 = 0;
+    s.width2 = 0;
+    s.height2 = 0;
+    s.top2 = 0;
+    s.left2 = 0;
+
+
     function resized() {
         initDrag();
-        s.fontSize = '' + (parseFloat($(window).height()) / parseFloat($('#Dashboard').get(0).scrollHeight) * 1.5) + 'em';
     }
 
     $scope.$on('forceResize', function(event, args) {

@@ -1,4 +1,4 @@
-app.controller("forumns", ['$scope', '$window', '$document', '$sce', '$http', function ($scope, $window, $document, $sce, $http) {
+app.controller("forums", ['$scope', '$window', '$document', '$sce', '$http', function ($scope, $window, $document, $sce, $http) {
     $scope.data = [];
     $scope.forum = '';
     $scope.query = '';

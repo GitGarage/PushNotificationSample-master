@@ -1,5 +1,6 @@
 app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScope, $sce, $scope) {
     var s = $scope;
+    var first = true;
     s.data = {};
     s.canvas = 1;
     s.zoom = false;
@@ -8,26 +9,63 @@ app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScop
     s.init = function() {
            // for debugging
         // TODO: Connect this to the server for real, fake data
-
         window.addEventListener('resize', function() {
             moveGraph();
             if (s.zoom)
             {
                 resize(0);
             }
+            else
+            {
+                s.alterGraph();
+            }
         }, false);
+    };
+
+    $scope.$on('forceRedraw', function(event, args) {
+        s.alterGraph();
+    });
+
+    s.alterGraph = function() {
+        var thisHeight = parseFloat($(window).height());
+        var fraction = thisHeight / parseFloat($('#Dashboard').get(0).scrollHeight);
+        s.fontSize = '' + fraction + 'em';
+        var high = Math.floor(257.00 * fraction);
+        var wide = Math.floor(354.00 * fraction);
+        s.$apply(function(){
+            $('.graph').hide();
+            var s1 = $($('.shadow').get(0));
+            s1.css({height: high, width: wide});
+            s.height1 = high;
+            s.width1 = wide;
+            s.left1 = s1.offset().left;
+            s.top1 = s1.offset().top;
+            var s2 = $($('.shadow').get(1));
+            s2.css({height: high, width: wide});
+            s.height2 = high;
+            s.width2 = wide;
+            s.left2 = s2.offset().left;
+            s.top2 = s2.offset().top;
+            $('.graph').fadeIn(500);
+        });
     };
 
     function resize(time) {
         var shadow = $('.shadow');
         var graph = $('.graph');
         var background = $('.background');
-        if (s.canvas == 1)
+        var width = 0;
+        var height = 0;
+        if ($(window).width() > $(window).height())
         {
-            shadow.show();
+            height = $(window).height() > 450 ? 450 : $(window).height();
+            width = (height * 620) / 450;
         }
-        var width = $(window).width() > 620 ? 620 : $(window).width();
-        var height = (width * 450) / 620;
+        else
+        {
+            width = $(window).width() > 620 ? 620 : $(window).width();
+            height = (width * 450) / 620;
+        }
         background.fadeIn(500);
         graph.animate({
             left: ($(window).width() - width) / 2,
@@ -36,7 +74,6 @@ app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScop
             height: height
         }, time, function(){
             moving = false;
-            shadow.show();
         });
     }
 
@@ -52,12 +89,12 @@ app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScop
             if (!s.zoom)
             {
                 s.zoom = true;
+                $('#thisGraph').attr('data-expanded', true);
                 var x1 = graph1.offset().left;
                 var y1 = graph1.offset().top;
                 var x2 = graph2.offset().left;
                 var y2 = graph2.offset().top;
                 graph.css('z-index', 50);
-                graph.css('position', 'absolute');
                 graph1.css('left', x1);
                 graph1.css('top', y1);
                 graph2.css('left', x2);
@@ -66,7 +103,10 @@ app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScop
             }
             else
             {
+                var thisHeight = parseFloat($(window).height());
+                var fraction = thisHeight / parseFloat($('#Dashboard').get(0).scrollHeight);
                 s.zoom = false;
+                $('#thisGraph').attr('data-expanded', false);
                 var X1 = $(shadow.get(0)).offset().left;
                 var Y1 = $(shadow.get(0)).offset().top;
                 var X2 = $(shadow.get(1)).offset().left;
@@ -75,21 +115,17 @@ app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScop
                 graph1.animate({
                     left: X1,
                     top: Y1,
-                    width: 354,
-                    height: 257
+                    width: Math.floor(354.00 * fraction),
+                    height: Math.floor(257.00 * fraction)
                 }, 500, function(){
-                    graph1.css('position', 'inherit');
-                    shadow.hide();
                     moving = false;
                 });
                 graph2.animate({
                     left: X2,
                     top: Y2,
-                    width: 354,
-                    height: 257
-                }, 500, function(){
-                    graph2.css('position', 'inherit');
-                });
+                    width: Math.floor(354.00 * fraction),
+                    height: Math.floor(257.00 * fraction)
+                }, 500);
             }
         }
     };
@@ -340,6 +376,7 @@ app.controller("dashboard", ['$rootScope', '$sce', '$scope', function ($rootScop
             tg[g].css('height','257px');
 
             moveGraph();
+            resize(0);
             $rootScope.$broadcast('forceResize');
         }
     });

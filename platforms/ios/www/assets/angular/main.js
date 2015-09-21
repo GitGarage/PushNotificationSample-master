@@ -5,8 +5,12 @@ app.controller("main", ['$scope', function ($scope) {
     var x2 = 0;
     var initial;
     var counter = 0;
-    var refure = false;
+    var refuse = false;
+    s.fontSize = '1em';
     s.tabs = [];
+    s.frame1url = 'frame1.html';
+    s.frame2url = 'frame2.html';
+    s.frame3url = 'frame3.html';
 
     s.init = function() {
         $('title').html('E-Z·TOEIC');
@@ -17,11 +21,12 @@ app.controller("main", ['$scope', function ($scope) {
                 $(event.target).css('left', '-100%');
             }
         });
-        resized();
         window.addEventListener('resize', function() {
             resized();
         }, false);
     };
+
+    s.lastY = 0;
 
     function initDrag() {
         width = $('#frame2').width();
@@ -29,10 +34,44 @@ app.controller("main", ['$scope', function ($scope) {
         var framehold = $('#frameholder');
         framehold.draggable({
             containment: [-width,0,width,0],
+            distance: 30,
+            dynamic: false,
             drag: function(event, ui) {
                 if (!refuse)
                 {
                     x1 = $(event.target).offset().left;
+                    var originalPosition = ui.helper.data('draggableXY.originalPosition');
+                    var deltaX = Math.abs(originalPosition.left - ui.position.left);
+                    var deltaY = Math.abs(originalPosition.top - ui.position.top);
+
+                    var newDrag = ui.helper.data('draggableXY.newDrag');
+                    ui.helper.data('draggableXY.newDrag', false);
+
+                    var xMax = newDrag ? Math.max(deltaX, deltaY) === deltaX : ui.helper.data('draggableXY.xMax');
+                    ui.helper.data('draggableXY.xMax', xMax);
+
+                    var newPosition = ui.position;
+                    if(xMax) {
+                        newPosition.top = originalPosition.top;
+                    }
+                    if(!xMax){
+                        $('#frame1').css('top', newPosition.top + s.lastY);
+
+                        newPosition.top = 0;
+                        newPosition.left = originalPosition.left;
+                    }
+                    var height = $('#frame1').get(0).scrollHeight - $(window).height();
+                    var topper = $('#frame1').offset().top;
+                    if (-height >= topper)
+                    {
+                        $('#frame1').css('top', -height);
+                    }
+                    if (0 <= topper)
+                    {
+                        $('#frame1').css('top', 0);
+                    }
+
+                    return newPosition;
                 }
             },
             scroll: false,
@@ -40,6 +79,8 @@ app.controller("main", ['$scope', function ($scope) {
                 counter++;
                 if (counter == 1)
                 {
+                    ui.helper.data('draggableXY.originalPosition', ui.position || {top: 0, left: 0});
+                    ui.helper.data('draggableXY.newDrag', true);
                     x2 = $(event.target).offset().left;
                     initial = framehold.offset().left;
                     refuse = false;
@@ -53,6 +94,14 @@ app.controller("main", ['$scope', function ($scope) {
             stop: function(event, ui) {
                 if (!refuse)
                 {
+                    s.lastY = $('#frame1').offset().top;
+                    var width = $('#frame2').width();
+                    var framehold = $('#frameholder');
+                    var height = $('#frame1').get(0).scrollHeight;
+                    $('#frame1').css('height', height);
+                    framehold.draggable({
+                        containment: [-width,-height,width,height]
+                    });
                     var best = 0;
                     var title = 0;
                     for (var i = -1; i <= 1; i++)
@@ -113,6 +162,12 @@ app.controller("main", ['$scope', function ($scope) {
 
     function resized() {
         initDrag();
+        var thisHeight = parseFloat($(window).height());
+        s.fontSize = '' + (thisHeight / parseFloat($('#Dashboard').get(0).scrollHeight) * thisHeight) + 'em';
     }
+
+    $scope.$on('forceResize', function(event, args) {
+        resized();
+    });
 
 }]);

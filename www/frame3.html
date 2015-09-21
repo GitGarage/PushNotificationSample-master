@@ -41,9 +41,9 @@
                         width="354"
                         class="graph"
                         ng-click="zoomIn(0)"
-                        ng-style="{display : (canvas == 1 ? 'inline-block' : 'none'), visibility : (canvas == 1 ? 'visible' : 'hidden')}">
+                        ng-style="{height: height1, width: width1, left: left1, top: top1, position: 'absolute', display : (canvas == 1 ? 'inline-block' : 'none'), visibility : (canvas == 1 ? 'visible' : 'hidden')}">
                 </canvas>
-                <canvas height="257" width="354" style="display: none" class="shadow">
+                <canvas height="257" width="354" style="visibility: hidden" class="shadow">
                 </canvas>
             </td>
             <td ng-style="{width : (canvas == 2 ? '0px' : '50px')}">
@@ -139,94 +139,73 @@
             </td>
         </tr>
         <tr>
-            <td colspan="3"
-                style="font-size:1.2em;">
-                Reading Speed / wpm
-            </td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;
-            </td>
-        </tr>
-        <tr>
-            <td>
-            </td>
-            <td style="font-size:1.2em;">
-                Goal:
-            </td>
-            <td>
-                <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+            <td colspan="6">
+                <table style="width:100%">
                     <tr>
-                        <td ng-style="{'background-color': '#8e3931',
+                        <td colspan="3" style="font-size:1.2em;">
+                            Reading Speed / wpm
+                        </td>
+                        <td style="width:100px"></td>
+                        <td colspan="3" style="font-size:1.2em;padding-left:2em;">
+                            Vocabulary
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-size:1.2em;padding-left:2em;">
+                            Goal:
+                        </td>
+                        <td>
+                            <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+                                <tr>
+                                    <td ng-style="{'background-color': '#8e3931',
                            'width':(data.readingWPM.percent)+'%'}">
-                            &nbsp;
+                                        &nbsp;
+                                    </td>
+                                    <td class="scores"
+                                        ng-if="data.readingWPM.percent!=100">
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
-                        <td class="scores"
-                            ng-if="data.readingWPM.percent!=100">
-                            &nbsp;
+                        <td colspan="2"
+                            style="padding-left: 1.2em;font-size:1.2em;text-align: center">
+                            {{data.readingWPM.total}} / 150
                         </td>
-                    </tr>
-                </table>
-            </td>
-            <td colspan="3"
-                style="padding-left: 1.2em;font-size:1.2em;">
-                {{data.readingWPM.total}} / 150
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-            </td>
-            <td style="text-align: center;font-size:1.2em;">
-                {{data.readingWPM.percent}}%
-            </td>
-        </tr>
-        <tr>
-            <td colspan="3"
-                style="font-size:1.2em;">
-                Vocabulary
-            </td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;
-            </td>
-        </tr>
-        <tr>
-            <td>
-            </td>
-            <td style="font-size:1.2em;">
-                Goal:
-            </td>
-            <td>
-                <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
-                    <tr>
-                        <td ng-style="{'background-color': '#8e3931',
+                        <td style="font-size:1.2em;">
+                            Goal:
+                        </td>
+                        <td>
+                            <table style="width:100%; border-spacing: 0px; background-color: #8e3931">
+                                <tr>
+                                    <td ng-style="{'background-color': '#8e3931',
                            'width':(data.vocabulary.percent)+'%'}">
-                            &nbsp;
+                                        &nbsp;
+                                    </td>
+                                    <td class="scores"
+                                        ng-if="data.vocabulary.percent!=100">
+                                        &nbsp;
+                                    </td>
+                                </tr>
+                            </table>
                         </td>
-                        <td class="scores"
-                            ng-if="data.vocabulary.percent!=100">
-                            &nbsp;
+                        <td colspan="3"
+                            style="padding-left: 1.2em;font-size:1.2em;text-align: center">
+                            {{data.vocabulary.total}} / 8000
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="text-align: center;font-size:1.2em; width: 30%">
+                            {{data.readingWPM.percent}}%
+                        </td>
+                        <td colspan="2"></td>
+                        <td style="width:100px"></td>
+                        <td style="text-align: center;font-size:1.2em; width: 30%">
+                            {{data.vocabulary.percent}}%
                         </td>
                     </tr>
                 </table>
-            </td>
-            <td colspan="3"
-                style="padding-left: 1.2em;font-size:1.2em;">
-                {{data.vocabulary.total}} / 8000
-            </td>
-        </tr>
-        <tr>
-            <td colspan="2">
-            </td>
-            <td style="text-align: center;font-size:1.2em;">
-                {{data.vocabulary.percent}}%
-            </td>
-        </tr>
-        <tr>
-            <td>
-                &nbsp;
             </td>
         </tr>
     </table>
@@ -235,12 +214,13 @@
                 height="4500"
                 width="6200"
                 class="graph"
+                data-expanded="false"
                 ng-click="zoomIn(1)"
-                ng-style="{visibility : (canvas == 2 ? 'visible' : 'hidden')}">
+                ng-style="{height: height2, width: width2, left: left2, top: top2, position: 'absolute', visibility : (canvas == 2 ? 'visible' : 'hidden')}">
         </canvas>
-        <canvas height="257" width="354" style="display: none" class="shadow">
+        <canvas height="257" width="354" style="visibility: hidden" class="shadow">
         </canvas>
-        <div class="background" style="display:none;">
+        <div class="background" style="display:none;" ng-repeat="foo in ['bar']" ng-init="tick()">
         </div>
     </div>
     <hr>
@@ -251,6 +231,8 @@
     </button>
     <button id="refresh"
             style="display:none"
-            ng-click="refresh()">
+            ng-repeat="foo in ['bar']"
+            ng-click="refresh()"
+            ng-init="alterGraph()">
     </button>
 </div>

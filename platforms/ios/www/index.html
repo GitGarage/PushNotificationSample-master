@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>E-Z·TOEIC</title>
+    <title></title>
     <link rel="stylesheet" media="all" href="assets/application.css" />
     <script src="assets/jquery-1.11.3.js"></script>
     <script src="assets/jquery-ui.js"></script>
@@ -11,6 +11,9 @@
     <script src="assets/angular-route.js"></script>
     <script src="assets/app.js"></script>
     <script src="assets/angular/main.js"></script>
+    <script src="assets/angular/dashboard.js"></script>
+    <script src="assets/angular/forumns.js"></script>
+    <script src="assets/angular/splash.js"></script>
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ng-cordova.js"></script>
     <script src="cordova.js"></script>
@@ -19,11 +22,7 @@
       ng-controller="main"
       ng-init="init()">
 <div id="frameholder">
-    <div id="frame1" class="slide" style="left:-100%">
-    </div>
-    <div id="frame2" class="slide">
-    </div>
-    <div id="frame3" class="slide" style="left: 100%">
+    <div ng-repeat="num in '123'" id="frame{{num}}" class="slide" ng-include="'frame' + num + '.html'" ng-style="{left:'' + ((num - 2) * 100) + '%'}">
     </div>
 </div>
 <div id="shield" style="display: none;"></div>
